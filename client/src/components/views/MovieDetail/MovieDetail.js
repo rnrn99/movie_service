@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API_URL, API_KEY, IMAGE_BASE_URL } from '../../Config';
 import MainImage from '../LandingPage/Section/MainImage';
 import MovieInfo from './Section/MovieInfo';
+import Favorite from './Section/Favorite';
 import GridCards from '../Commons/GridCards';
 import { Row } from 'antd';
 
@@ -20,7 +21,7 @@ function MovieDetail(props) {
             .then(response => response.json())
             .then(response => {
                 setMovie(response);
-                console.log(response);
+                // console.log(response);
             });
 
         fetch(endpointCast)
@@ -49,6 +50,14 @@ function MovieDetail(props) {
             {/* Body */}
 
             <div style={{ width: '85%', margin: '1rem auto' }}>
+
+                <div style={{ display:'flex', justifyContent:'flex-end' }}>
+                    <Favorite 
+                        movieInfo={Movie}
+                        movieId={movieId}
+                        userFrom={localStorage.getItem('userId')}
+                    />
+                </div>
 
                 {/* Movie Info */}
                 <MovieInfo
