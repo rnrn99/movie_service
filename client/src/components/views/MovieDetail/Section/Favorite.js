@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Button } from 'antd';
 
 function Favorite(props) {
 
@@ -11,13 +12,40 @@ function Favorite(props) {
 
     const [FavoriteNumber, setFavoriteNumber] = useState(0);
     const [Favorited, setFavorited] = useState(false);
+    
+    let variables = {
+        userFrom,
+        movieId,
+        movieTitle,
+        movieImage,
+        movieRuntime
+    }
+
+    const clickFavorite = () => {
+        if(Favorited){ 
+            // 이미 Favorite check가 되어있는 경우 => Favorited 비활성화
+            axios.post('/api/favorite/removeFavorite', variables)
+                 .then(response =>{
+                    if(response.data.success) {
+                        setFavoriteNumber(FavoriteNumber - 1);
+                        setFavorited(!Favorited);
+                    }
+                    else alert('Failed to post /api/favorite/removeFavorite');
+                 });
+        }
+        else {
+            axios.post('/api/favorite/addFavorite', variables)
+            .then(response =>{
+               if(response.data.success) {
+                   setFavoriteNumber(FavoriteNumber + 1);
+                   setFavorited(!Favorited);
+                }
+               else alert('Failed to post /api/favorite/addFavorite');
+            });
+        }
+    }
 
     useEffect(() => {
-
-        let variables = {
-            userFrom,
-            movieId
-        }
 
         axios.post('/api/favorite/favoriteNumber', variables)
              .then(response => {
@@ -35,7 +63,7 @@ function Favorite(props) {
 
     return (
         <div>
-            <button>{Favorited ? "Not Favorite" : "Add to Favorite"} {FavoriteNumber}</button>
+            <Button onClick={clickFavorite}>{Favorited ? "Not Favorite" : "Add to Favorite"} {FavoriteNumber}</Button>
         </div>
     )
 }
