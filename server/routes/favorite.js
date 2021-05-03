@@ -41,9 +41,19 @@ router.post('/addFavorite', (req, res) => {
 
     favorite.save((err, doc) => {
         if(err) return res.status(400).send(err);
-        return res.status(200).json({ success: true });
+        return res.status(200).json({ success: true, doc});
     });
 
 });
+
+// 유저가 favorite check 한 영화 목록을 가져옴
+router.post('/getFavoritedMovie', (req, res) => {
+    Favorite.find({ 'userFrom': req.body.userFrom })
+            .exec((err, favorites) => {
+                if(err) return res.status(400).send(err);
+                return res.status(200).json({ success: true, favorites });
+            });
+});
+
 
 module.exports = router;
